@@ -1,0 +1,90 @@
+﻿@model IEnumerable<WebApp.ViewModels.Courses.FileAssetVM>
+@using WebApp.ViewModels.Courses
+
+@{
+    var course = (CourseVM)ViewBag.Course;
+    ViewData["Title"] = course.Name;
+}
+
+<h2 class="mb-1">@course.Name</h2>
+@if (!string.IsNullOrWhiteSpace(course.ShortDescription))
+{
+    <p class="text-muted">@course.ShortDescription</p>
+}
+
+@if (TempData["Msg"] is string ok)
+{
+    <div class="alert alert-success">@ok</div>
+}
+@if (TempData["Err"] is string err)
+{
+    <div class="alert alert-danger">@err</div>
+}
+
+<div class="d-flex align-items-center gap-2 mb-3">
+    <a class="btn btn-outline-primary"
+       asp-controller="Submissions" asp-action="ForCourse"
+       asp-route-id="@course.Id">
+        Submissions
+    </a>
+</div>
+
+<form asp-action="Upload" method="post" enctype="multipart/form-data" class="mb-3">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" value="@course.Id" />
+    <div class="input-group">
+        <input type="file" name="file" class="form-control" />
+        <button class="btn btn-primary" type="submit">Upload</button>
+    </div>
+    <small class="text-muted">Max size is enforced by the API.</small>
+</form>
+
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            <th>File</th>
+            <th>Uploaded</th>
+            <th>Size</th>
+            <th style="width:220px;"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model is null || !Model.Any())
+        {
+            <tr>
+                <td colspan="4" class="text-muted">No files yet.</td>
+            </tr>
+        }
+        else
+        {
+            foreach (var f in Model)
+            {
+                <tr>
+                    <td>@f.FileName</td>
+                    <td>@f.UploadedAt.ToLocalTime()</td>
+                    <td>@(Math.Round(f.SizeBytes / 1024.0, 1)) KB</td>
+                    <td>
+                        <a class="btn btn-sm btn-outline-secondary"
+                           asp-action="Download" asp-route-id="@f.Id">
+                            Download
+                        </a>
+
+                        @* ADMIN ONLY: delete file *@
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <form asp-action="DeleteFile" method="post" class="d-inline ms-2"
+                                  onsubmit="return confirm('Delete this file?')">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@f.Id" />
+                                <input type="hidden" name="courseId" value="@course.Id" />
+                                <button class="btn btn-sm btn-outline-danger">Delete</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<a class="btn btn-link" asp-action="Index">Back to courses</a>

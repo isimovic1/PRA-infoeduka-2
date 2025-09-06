@@ -1,0 +1,12 @@
+﻿@using WebApp.ViewModels.Courses
+@{
+    var course = (CourseVM)ViewBag.Course;
+    ViewData["Title"] = "No access";
+}
+<h2>@course.Name</h2>
+
+<div class="alert alert-warning">
+    You don’t have access to this course. You must be enrolled (student) or assigned (professor) to view files and submissions.
+</div>
+
+<a class="btn btn-secondary" asp-action="Index">Back to courses</a>

@@ -1,0 +1,87 @@
+﻿@model WebApp.ViewModels.Grades.GradeVM
+@{
+    ViewData["Title"] = "Grade";
+    var courseId = (int)ViewBag.CourseId;
+    var submissionId = (int)ViewBag.SubmissionId;
+    var save = (WebApp.ViewModels.Grades.GradeSaveVM)ViewBag.Save;
+}
+
+<h2>Grade</h2>
+
+@if (TempData["Msg"] is string ok)
+{
+     <div class="alert alert-success">@ok</div>
+}
+@if (TempData["Err"] is string err)
+{
+     <div class="alert alert-danger">@err</div>
+}
+
+<div class="card mb-3">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Submission</dt>
+            <dd class="col-sm-9">#@submissionId</dd>
+
+            @if (Model != null && Model.GradedAt.HasValue)
+            {
+                <dt class="col-sm-3">Graded at</dt>
+                <dd class="col-sm-9">@Model.GradedAt.Value.ToLocalTime()</dd>
+
+                <dt class="col-sm-3">Points</dt>
+                <dd class="col-sm-9">@Model.Points</dd>
+
+                @if (!string.IsNullOrWhiteSpace(Model.Note))
+                {
+                    <dt class="col-sm-3">Note</dt>
+                    <dd class="col-sm-9">@Model.Note</dd>
+                }
+            }
+            else
+            {
+                <dt class="col-sm-3">Status</dt>
+                <dd class="col-sm-9">Not graded</dd>
+            }
+        </dl>
+    </div>
+</div>
+
+@if (User.IsInRole("Admin") || User.IsInRole("Professor"))
+{
+    <div class="card">
+        <div class="card-header">Set / Update Grade</div>
+        <div class="card-body">
+            <form asp-action="Save" method="post" class="row g-2">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="SubmissionId" value="@save.SubmissionId" />
+                <input type="hidden" name="CourseId" value="@save.CourseId" />
+                <div class="col-md-2">
+                    <label class="form-label">Points (0–100)</label>
+                    <input class="form-control" name="Points" type="number" min="0" max="100" step="1" value="@(save.Points)" />
+                </div>
+                <div class="col-md-7">
+                    <label class="form-label">Note (optional)</label>
+                    <input class="form-control" name="Note" value="@save.Note" />
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button class="btn btn-success w-100">Save grade</button>
+                </div>
+            </form>
+
+            <form asp-action="RemoveGrade" method="post" class="d-inline mt-2"
+                  onsubmit="return confirm('Remove this grade?')">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="submissionId" value="@submissionId" />
+                <input type="hidden" name="courseId" value="@courseId" />
+                <button class="btn btn-outline-danger btn-sm">Remove grade</button>
+            </form>
+        </div>
+    </div>
+}
+
+<div class="mt-3">
+    <a class="btn btn-link"
+       asp-controller="Submissions" asp-action="ForCourse" asp-route-id="@courseId">
+        Back to submissions
+    </a>
+</div>

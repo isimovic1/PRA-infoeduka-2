@@ -1,0 +1,101 @@
+﻿@model IEnumerable<WebApp.ViewModels.Notifications.NotificationVM>
+@{
+    ViewData["Title"] = "Notifications";
+    bool unreadOnly = (bool?)ViewBag.UnreadOnly ?? false;
+    string TabClass(bool isActive) => isActive ? "btn btn-sm btn-primary" : "btn btn-sm btn-outline-secondary";
+}
+
+<section class="container py-4">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h1 class="h3 mb-0">Notifications</h1>
+        <form asp-action="MarkAllRead" method="post" class="ms-3">
+            @Html.AntiForgeryToken()
+            <button class="btn btn-outline-primary btn-sm">Mark all read</button>
+        </form>
+    </div>
+
+    <div class="mb-3">
+        <a asp-action="Index" asp-route-unreadOnly="false" class="@TabClass(!unreadOnly)">All</a>
+        <a asp-action="Index" asp-route-unreadOnly="true" class="@TabClass(unreadOnly)">Unread</a>
+    </div>
+
+    @if (!Model?.Any() ?? true)
+    {
+        <div class="alert alert-info">No notifications.</div>
+    }
+    else
+    {
+        <form asp-action="MarkRead" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width:36px">
+                                <input type="checkbox" id="chkAll" class="form-check-input" />
+                            </th>
+                            <th>Title</th>
+                            <th>From</th>
+                            <th>When</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var n in Model)
+                        {
+                            var rowClass = n.IsRead ? "" : "table-warning";
+                            var link = n.Link;
+                            if (!string.IsNullOrWhiteSpace(link) && link.StartsWith("/api/"))
+                            {
+                                // Show web route instead of API route
+                                link = "/" + link.Substring(5);
+                            }
+
+                            <tr class="@rowClass">
+                                <td>
+                                    <input type="checkbox" class="form-check-input chkRow" name="ids" value="@n.Id" />
+                                </td>
+                                <td>
+                                    <div class="fw-semibold">@n.Title</div>
+                                    @if (!string.IsNullOrWhiteSpace(n.Body))
+                                    {
+                                        <div class="text-muted small">@n.Body</div>
+                                    }
+                                    @if (!string.IsNullOrWhiteSpace(link))
+                                    {
+                                        <div class="small mt-1">
+                                            <a href="@link">Open</a>
+                                        </div>
+                                    }
+                                </td>
+                                <td>@(n.FromUserEmail ?? "-")</td>
+                                <td>@n.CreatedAt.ToLocalTime()</td>
+                                <td class="text-end">
+                                    <form asp-action="Delete" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@n.Id" />
+                                        <button class="btn btn-sm btn-outline-danger">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <button class="btn btn-success btn-sm mt-2">Mark read (selected)</button>
+        </form>
+    }
+
+</section>
+
+@section Scripts {
+    <script>
+        // select all / select none
+        document.getElementById('chkAll')?.addEventListener('change', function () {
+            const on = this.checked;
+            document.querySelectorAll('.chkRow').forEach(cb => cb.checked = on);
+        });
+    </script>
+}

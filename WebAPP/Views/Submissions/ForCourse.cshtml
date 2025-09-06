@@ -1,0 +1,122 @@
+﻿@model IEnumerable<WebApp.ViewModels.Submissions.SubmissionItemVM>
+@using WebApp.ViewModels.Courses
+
+@{
+    var course = (CourseVM)ViewBag.Course;
+    ViewData["Title"] = "Submissions";
+}
+
+<h2>@course.Name</h2>
+
+@if (TempData["Msg"] is string ok)
+{
+     <div class="alert alert-success">@ok</div>
+}
+@if (TempData["Err"] is string err)
+{
+     <div class="alert alert-danger">@err</div>
+}
+
+@if (User.IsInRole("Student"))
+{
+    <form asp-action="Submit" method="post" enctype="multipart/form-data" class="mb-3">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="CourseId" value="@course.Id" />
+        <div class="row g-2">
+            <div class="col-md-8">
+                <input class="form-control" type="file" name="File" />
+            </div>
+            <div class="col-md-4">
+                <button class="btn btn-primary w-100">Submit</button>
+            </div>
+        </div>
+    </form>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Student</th>
+            <th>File</th>
+            <th>Submitted</th>
+            <th>Status</th>
+            <th style="width:220px;"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var s in Model)
+        {
+            <tr>
+                <td>@(s.StudentName ?? ("#" + s.StudentId))</td>
+                <td>
+                    @s.FileName
+                    <a class="ms-2 btn btn-sm btn-outline-secondary"
+                       asp-controller="Courses" asp-action="Download" asp-route-id="@s.FileAssetId">
+                        Download
+                    </a>
+                </td>
+                <td>@s.UploadedAt.ToLocalTime()</td>
+                <td>@(s.Reviewed ? "Reviewed" : "Pending")</td>
+
+                <td>
+                    @* staff actions *@
+                    @if (User.IsInRole("Admin") || User.IsInRole("Professor"))
+                    {
+                        <form asp-action="Review" method="post" class="d-inline me-2">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@course.Id" />
+                            <input type="hidden" name="SubmissionId" value="@s.Id" />
+                            <input type="hidden" name="Reviewed" value="true" />
+                            <button class="btn btn-sm btn-success">Mark reviewed</button>
+                        </form>
+
+                        <a class="btn btn-sm btn-outline-primary"
+                           asp-controller="Grades" asp-action="ForSubmission"
+                           asp-route-submissionId="@s.Id" asp-route-courseId="@course.Id">
+                            Grade
+                        </a>
+                    }
+
+                    @* allow staff to delete any time *@
+                    @if (User.IsInRole("Admin") || User.IsInRole("Professor"))
+                    {
+                        <form asp-action="Delete" method="post" class="d-inline ms-2"
+                              onsubmit="return confirm('Delete this submission?')">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@s.Id" />
+                            <input type="hidden" name="courseId" value="@course.Id" />
+                            <button class="btn btn-sm btn-outline-danger">Delete submission</button>
+                        </form>
+                    }
+
+                    @* allow student only when not reviewed *@
+                    @if (User.IsInRole("Student") && !s.Reviewed)
+                    {
+                        <form asp-action="Delete" method="post" class="d-inline ms-2"
+                              onsubmit="return confirm('Delete your submission?')">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@s.Id" />
+                            <input type="hidden" name="courseId" value="@course.Id" />
+                            <button class="btn btn-sm btn-outline-danger">Delete</button>
+                        </form>
+                    }
+
+                    @if (User.IsInRole("Student"))
+                    {
+                        <a class="btn btn-sm btn-outline-secondary ms-2"
+                           asp-controller="Grades" asp-action="ForSubmission"
+                           asp-route-submissionId="@s.Id" asp-route-courseId="@course.Id">
+                            View grade
+                        </a>
+                    }
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a class="btn btn-link"
+   asp-controller="Courses" asp-action="Details" asp-route-id="@course.Id">
+    Back to course
+</a>

@@ -1,0 +1,26 @@
+﻿@model WebApp.ViewModels.Courses.CourseVM
+@{
+    ViewData["Title"] = "Create course";
+}
+<h2>Create course</h2>
+
+<form asp-action="Create" method="post" class="col-lg-6">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="All" class="text-danger mb-2"></div>
+
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="ShortDescription" class="form-label"></label>
+        <textarea asp-for="ShortDescription" rows="3" class="form-control"></textarea>
+    </div>
+    <button class="btn btn-success">Create</button>
+    <a class="btn btn-outline-secondary" asp-action="Index">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

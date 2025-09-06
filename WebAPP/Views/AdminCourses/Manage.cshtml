@@ -1,0 +1,161 @@
+﻿@model WebApp.ViewModels.AdminCourses.ManageCourseVM
+@{
+    ViewData["Title"] = "Manage course";
+}
+<h2>Manage: @Model.Course.Name</h2>
+
+@if (TempData["Msg"] is string ok)
+{
+     <div class="alert alert-success">@ok</div>
+}
+@if (TempData["Err"] is string err)
+{
+     <div class="alert alert-danger">@err</div>
+}
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">Course</div>
+            <div class="card-body">
+                <form asp-action="Save" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Course.Id" />
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <input class="form-control" name="Name" value="@Model.Course.Name" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Short description</label>
+                        <textarea class="form-control" name="ShortDescription" rows="3">@Model.Course.ShortDescription</textarea>
+                    </div>
+                    <button class="btn btn-primary">Save</button>
+                    <a class="btn btn-outline-secondary ms-2" asp-action="Index">Back</a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="row g-4">
+            <div class="col-12 col-xl-6">
+                <div class="card h-100">
+                    <div class="card-header">Professors</div>
+                    <div class="card-body">
+                        <form method="get" class="mb-3">
+                            <input type="hidden" name="id" value="@Model.Course.Id" />
+                            <div class="input-group">
+                                <input class="form-control" type="text" name="qProf" value="@Model.QProf" placeholder="Search professors..." />
+                                <button class="btn btn-outline-secondary">Search</button>
+                            </div>
+                        </form>
+
+                        @if (Model.ProfResults?.Any() == true)
+                        {
+                            <div class="mb-3">
+                                <div class="fw-semibold mb-1">Results</div>
+                                @foreach (var u in Model.ProfResults)
+                                {
+                                    <div class="d-flex align-items-center justify-content-between py-1 border-bottom">
+                                        <div>
+                                            <div class="fw-semibold">@u.FirstName @u.LastName</div>
+                                            <div class="text-muted small">@u.Email</div>
+                                        </div>
+                                        <form asp-action="AddTeacher" method="post" class="d-flex align-items-center">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@Model.Course.Id" />
+                                            <input type="hidden" name="userId" value="@u.Id" />
+                                            <div class="form-check me-2">
+                                                <input class="form-check-input" type="checkbox" name="isAssistant" id="asst_@u.Id" />
+                                                <label class="form-check-label small" for="asst_@u.Id">Assistant</label>
+                                            </div>
+                                            <button class="btn btn-sm btn-primary">Add</button>
+                                        </form>
+                                    </div>
+                                }
+                            </div>
+                        }
+
+                        <div class="fw-semibold mb-1">Assigned</div>
+                        <ul class="list-group">
+                            @foreach (var t in Model.Teachers)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fw-semibold">@t.FirstName @t.LastName @(t.IsAssistant ? "(Assistant)" : "")</div>
+                                        <div class="text-muted small">@t.Email</div>
+                                    </div>
+                                    <form asp-action="RemoveTeacher" method="post"
+                                          onsubmit="return confirm('Remove this professor from the course?');">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@Model.Course.Id" />
+                                        <input type="hidden" name="userId" value="@t.UserId" />
+                                        <button class="btn btn-sm btn-outline-danger">Remove</button>
+                                    </form>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-xl-6">
+                <div class="card h-100">
+                    <div class="card-header">Students</div>
+                    <div class="card-body">
+                        <form method="get" class="mb-3">
+                            <input type="hidden" name="id" value="@Model.Course.Id" />
+                            <div class="input-group">
+                                <input class="form-control" type="text" name="qStud" value="@Model.QStud" placeholder="Search students..." />
+                                <button class="btn btn-outline-secondary">Search</button>
+                            </div>
+                        </form>
+
+                        @if (Model.StudResults?.Any() == true)
+                        {
+                            <div class="mb-3">
+                                <div class="fw-semibold mb-1">Results</div>
+                                @foreach (var u in Model.StudResults)
+                                {
+                                    <div class="d-flex align-items-center justify-content-between py-1 border-bottom">
+                                        <div>
+                                            <div class="fw-semibold">@u.FirstName @u.LastName</div>
+                                            <div class="text-muted small">@u.Email</div>
+                                        </div>
+                                        <form asp-action="EnrollStudent" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@Model.Course.Id" />
+                                            <input type="hidden" name="userId" value="@u.Id" />
+                                            <button class="btn btn-sm btn-primary">Enroll</button>
+                                        </form>
+                                    </div>
+                                }
+                            </div>
+                        }
+
+                        <div class="fw-semibold mb-1">Enrolled</div>
+                        <ul class="list-group">
+                            @foreach (var s in Model.Students)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fw-semibold">@s.FirstName @s.LastName</div>
+                                        <div class="text-muted small">@s.Email @(s.GroupId.HasValue ? $"(Group {s.GroupId})" : "")</div>
+                                    </div>
+                                    <form asp-action="UnenrollStudent" method="post"
+                                          onsubmit="return confirm('Remove this student from the course?');">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@Model.Course.Id" />
+                                        <input type="hidden" name="userId" value="@s.UserId" />
+                                        <button class="btn btn-sm btn-outline-danger">Remove</button>
+                                    </form>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

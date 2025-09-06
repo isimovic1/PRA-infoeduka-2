@@ -1,0 +1,13 @@
+﻿@model WebApp.ViewModels.Auth.UserDto
+@{
+	ViewData["Title"] = "Profile";
+}
+<h2>My profile</h2>
+<table class="table">
+	<tr><th>Role</th><td>@Model.RoleName (@Model.Role)</td></tr>
+	<tr><th>First name</th><td>@Model.FirstName</td></tr>
+	<tr><th>Last name</th><td>@Model.LastName</td></tr>
+	<tr><th>Email</th><td>@Model.Email</td></tr>
+	<tr><th>Group</th><td>@(Model.GroupId?.ToString() ?? "-")</td></tr>
+</table>
+<a class="btn btn-outline-primary" asp-controller="Auth" asp-action="ChangePassword">Change password</a>

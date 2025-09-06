@@ -1,0 +1,82 @@
+﻿@model WebApp.ViewModels.AdminUsers.UsersPageVM
+@{
+    ViewData["Title"] = "Manage users";
+    string roleStr = Model.Role?.ToString() ?? "";
+}
+
+<h2 class="mb-3">Manage users</h2>
+
+<form method="get" class="row gy-2 gx-2 align-items-end mb-3">
+    <div class="col-md-5">
+        <label class="form-label">Search</label>
+        <input type="text" class="form-control" name="search" value="@Model.Search" placeholder="Name or email" />
+    </div>
+    <div class="col-md-3">
+        <label class="form-label">Role</label>
+        <select class="form-select" name="role">
+            <option value="">All</option>
+            <option value="0" selected="@(roleStr=="0")">Student</option>
+            <option value="1" selected="@(roleStr=="1")">Professor</option>
+            <option value="2" selected="@(roleStr=="2")">Admin</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label class="form-label">Page size</label>
+        <input type="number" class="form-control" name="pageSize" value="@Model.PageSize" min="5" max="200" />
+    </div>
+    <div class="col-md-2">
+        <button class="btn btn-primary w-100">Search</button>
+    </div>
+</form>
+
+@if (Model.Items.Count == 0)
+{
+    <div class="alert alert-info">No users found.</div>
+}
+else
+{
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div><strong>@Model.Total</strong> result(s)</div>
+        <div class="btn-group">
+            @{
+                var prev = Math.Max(1, Model.Page - 1);
+                var next = (Model.Page * Model.PageSize < Model.Total) ? Model.Page + 1 : Model.Page;
+                string q = $"search={Uri.EscapeDataString(Model.Search ?? "")}&role={roleStr}&pageSize={Model.PageSize}";
+            }
+            <a class="btn btn-outline-secondary @(Model.Page==1?"disabled":"")" href="?@q&page=@prev">« Prev</a>
+            <span class="btn btn-outline-secondary disabled">Page @Model.Page</span>
+            <a class="btn btn-outline-secondary @((Model.Page*Model.PageSize>=Model.Total)?"disabled":"")" href="?@q&page=@next">Next »</a>
+        </div>
+    </div>
+
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name / Email</th>
+                <th>Role</th>
+                <th>Group</th>
+                <th>First login</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var u in Model.Items)
+            {
+                <tr>
+                    <td>@u.Id</td>
+                    <td>
+                        <div class="fw-semibold">@u.FirstName @u.LastName</div>
+                        <div class="text-muted small">@u.Email</div>
+                    </td>
+                    <td>@u.RoleName (@u.Role)</td>
+                    <td>@(u.GroupId?.ToString() ?? "-")</td>
+                    <td>@(u.IsFirstLogin ? "Yes" : "No")</td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@u.Id">Open</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

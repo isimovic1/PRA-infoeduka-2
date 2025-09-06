@@ -1,0 +1,17 @@
+) Implementirati igru u SFML-u s kontinuiranim osvježavanjem svake 2 sekunde. Kao temelj
+uzmite projekt https://github.com/gdambic/gdambic-rvs19-spa-dz-02, a postupak je jednak kao
+na prvoj domaćoj zadaći. 
+
+1. Na GitHubu otvoriti moj projekt https://github.com/gdambic/rvs19-spa-dz-01
+2. Kliknuti na gumb Fork kako biste napravili svoju kopiju projekta.
+3. Kliknuti Code i kopirati si Git putanju (ima oblik „https://github.com/x/y.git“)
+5. Otići u C:\spa\ (ili negdje drugdje) i desnim klikom odabrati „Git Bash Here“.
+6. Zadati „git clone https://github.com/x/y.git“ sa vašom putanjom
+7. Otvoriti projekt u Visual Studiju dvostrukim klikom na SpaDomacaZadaca01.sln.
+8. Provjeriti da su u alatnoj traci Visual Studija odabrane opcije „Debug“ i „x64“ te zadati Build.
+9. Pokretanjem aplikacije dobijemo prazni crni ekran i ispod njega konzolu – spremni ste za rad. Ako se
+pojave greške pri kompajliranju, potrebno je napraviti desni klik na solution i zadati „Retarget solution“ pa
+odabrati jednu od ponuđenih opcija.
+
+Pass: fajlerkompajler
+kotakkarlo@outlook

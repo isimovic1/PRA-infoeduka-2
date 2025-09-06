@@ -1,0 +1,137 @@
+LINUX TERMINAL COMMANDS - WEBMINAL
+
+
+->
+Lesson 1: Basic Commands to Navigate Directories
+Commands Introduced:
+
+pwd: Prints the current working directory.
+mkdir: Creates new directories.
+ls: Lists directory contents.
+cd: Changes the current directory.
+
+Concepts:
+Understanding the filesystem hierarchy.
+Creating and navigating directories.
+Viewing directory contents.
+
+->
+Lesson 2: Create Files, Display Contents, and View Statistics
+Commands Introduced:
+
+touch: Creates empty files or updates timestamps.
+echo: Outputs text to the terminal or files.
+cat: Concatenates and displays file contents.
+head: Displays the first few lines of a file.
+tail: Displays the last few lines of a file.
+
+Concepts:
+Creating and modifying files.
+Redirecting output to files.
+Viewing and analyzing file contents.
+
+->
+Lesson 3: File Permissions and Ownership
+Commands Introduced:
+
+chmod: Changes file permissions.
+chown: Changes file ownership.
+chgrp: Changes group ownership.
+
+Concepts:
+Understanding read, write, and execute permissions.
+Modifying permissions for users, groups, and others.
+Changing file and directory ownership.
+
+->
+Lesson 4: Moving, Copying, and Deleting Files
+
+Commands Introduced:
+mv: Moves or renames files and directories.
+cp: Copies files and directories.
+rm: Removes files and directories.
+
+Concepts:
+Relocating and renaming files.
+Duplicating files and directories.
+Deleting files and directories safely.
+
+->
+Lesson 5: Viewing File Contents and Searching
+
+Commands Introduced:
+less: Views file contents one screen at a time.
+more: Similar to less, but with fewer features.
+grep: Searches for patterns within files.
+
+Concepts:
+Efficiently viewing large files.
+Searching for specific text or patterns within files.
+
+->
+Lesson 6: Redirection and Piping
+
+Commands Introduced:
+: Redirects output to a file (overwrites).
+: Appends output to a file.
+| : Pipes output from one command to another.
+
+Concepts:
+Redirecting command output to files.
+Combining multiple commands using pipes for advanced operations.
+
+->
+Lesson 7: Environment Variables and Shell Configuration
+
+Commands Introduced:
+export: Sets environment variables.
+env: Displays the current environment variables.
+alias: Creates shortcuts for commands.
+
+Concepts:
+Understanding and setting environment variables.
+Customizing the shell environment.
+Creating command aliases for efficiency.
+
+->
+Lesson 8: Introduction to Shell Scripting
+Commands Introduced:
+
+#!/bin/bash: Shebang to specify the script interpreter.
+Variables: Storing data in scripts.
+if: Conditional statements.
+for, while: Looping constructs.
+
+Concepts:
+Writing basic shell scripts.
+Using variables and control structures.
+Automating tasks using scripts.
+
+->
+Lesson 9: Linux Process Basic Commands
+Commands Introduced:
+
+ps: Displays current processes.
+top: Displays real-time system statistics.
+pidof ime_procesa : doznajemo id od nekog procesa (npr. pidof bash)
+kill proces_id: Terminates processes. (ubija 
+killall ime_proces (npr sleep)
+
+Concepts:
+Monitoring system processes.
+Managing and terminating processes.
+Understanding process IDs and signals.
+
+->
+Lesson 10: Networking Basics
+Commands Introduced:
+
+ping: Checks connectivity to a host.
+ifconfig: Displays network interfaces.
+netstat: Displays network connections.
+
+Concepts:
+Testing network connectivity.
+Viewing and configuring network interfaces.
+Monitoring network connections and statistics.
+

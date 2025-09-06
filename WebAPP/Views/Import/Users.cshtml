@@ -1,0 +1,47 @@
+﻿@model WebApp.ViewModels.Import.UploadUsersVM
+@{
+    ViewData["Title"] = "Import users";
+}
+
+<section class="container py-4" style="max-width: 920px;">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white">
+            <h1 class="h4 mb-0">Import users (Excel)</h1>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-info small">
+                <div class="fw-semibold mb-1">Expected columns (first worksheet):</div>
+                <ol class="mb-2">
+                    <li>FirstName</li>
+                    <li>LastName</li>
+                    <li>RoleName (<em>student</em>, <em>professor</em>/<em>nastavnik</em>, <em>admin</em>)</li>
+                    <li><em>(unused)</em></li>
+                    <li>Email</li>
+                    <li>GroupId (required for students, leave empty for admins)</li>
+                </ol>
+                Rows with empty First/Last/Email are skipped. Only <code>.xls/.xlsx</code> are accepted.
+                
+            </div>
+
+            <form asp-action="Users" method="post" enctype="multipart/form-data" class="row g-3">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                <div class="col-12">
+                    <label asp-for="File" class="form-label">Excel file</label>
+                    <input asp-for="File" class="form-control" accept=".xls,.xlsx" />
+                    <span asp-validation-for="File" class="text-danger"></span>
+                </div>
+
+                <div class="col-12 d-flex gap-2">
+                    <button class="btn btn-primary">Upload &amp; import</button>
+                    <a class="btn btn-outline-secondary" asp-controller="Home" asp-action="Index">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

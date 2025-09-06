@@ -1,0 +1,4 @@
+Sample Report
+-------------
+This is a tiny text file you can upload to /api/files/{courseId}/upload or to /api/submissions/upload.
+Feel free to rename it.

@@ -1,0 +1,103 @@
+﻿@model WebApp.ViewModels.AdminUsers.UserEditVM
+@{
+    ViewData["Title"] = "Edit user";
+}
+
+<h2>Edit user</h2>
+
+@if (TempData["Msg"] is string ok)
+{
+    <div class="alert alert-success">@ok</div>
+}
+@if (TempData["Err"] is string err)
+{
+    <div class="alert alert-danger">@err</div>
+}
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form asp-action="Edit" method="post" class="row g-3">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+
+            <div class="col-md-6">
+                <label class="form-label">Email</label>
+                <input class="form-control" asp-for="Email" readonly />
+            </div>
+
+            <div class="col-md-3">
+                <label asp-for="FirstName" class="form-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="LastName" class="form-label"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-3">
+                <label asp-for="Role" class="form-label"></label>
+                <select asp-for="Role" class="form-select">
+                    <option value="0">Student</option>
+                    <option value="1">Professor</option>
+                    <option value="2">Admin</option>
+                </select>
+                <span asp-validation-for="Role" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-3">
+                <label asp-for="GroupId" class="form-label"></label>
+                <input asp-for="GroupId" class="form-control" />
+                <div class="form-text">Students: required. Admins: empty.</div>
+                <span asp-validation-for="GroupId" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-3 d-flex align-items-end">
+                <div class="form-check">
+                    <input class="form-check-input" asp-for="IsFirstLogin" />
+                    <label class="form-check-label" asp-for="IsFirstLogin"> Must change password on next login</label>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <button class="btn btn-primary">Save</button>
+                <a class="btn btn-outline-secondary ms-2" asp-action="Index">Back to list</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card border-danger">
+    <div class="card-body">
+        <h5 class="text-danger">Danger zone</h5>
+        <form asp-action="Delete" method="post" onsubmit="return confirm('Delete this user permanently?');">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.Id" />
+            <button class="btn btn-danger">Delete user</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+            const roleSel = document.getElementById("Role");
+            const groupInput = document.getElementById("GroupId");
+            const toggle = () => {
+                const role = parseInt(roleSel.value || "0", 10);
+                if (role === 2) { // Admin
+                    groupInput.value = "";
+                    groupInput.placeholder = "(not allowed for Admin)";
+                } else if (role === 0) { // Student
+                    groupInput.placeholder = "(required for Student)";
+                } else {
+                    groupInput.placeholder = "(optional for Professor)";
+                }
+            };
+            roleSel.addEventListener('change', toggle);
+            toggle();
+        })();
+    </script>
+}

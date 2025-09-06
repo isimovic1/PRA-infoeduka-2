@@ -1,0 +1,6 @@
+Da ocjenjivati submissione mogu ocjenjivati samo oni profesori koji su u tablici TeacherCourse odnosno oni profesori koji su enrollani u course 
+(CourseID u submission treba biti jednak )
+
+Pogledaj sad u Odgovoru GPT-a zasto nemogu upload direktno u Submissione kao student (zadnji odgovor)
+
+--Za delete Submissiona

@@ -1,0 +1,52 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<section class="home-hero py-5">
+    <div class="container text-center">
+        <h1 class="display-3 fw-bold mb-3 fade-in-1">
+            Welcome to <span class="brand-animated">Infoeduka!</span>
+        </h1>
+        <p class="lead text-muted mx-auto max-w-600 fade-in-2">
+            The best way to navigate your education.
+        </p>
+
+        <div class="mt-4 fade-in-3">
+            <a class="btn btn-primary btn-lg me-2" asp-controller="Courses" asp-action="Index">Browse courses</a>
+            <a class="btn btn-outline-secondary btn-lg" asp-controller="Notifications" asp-action="Index">Notifications</a>
+            <a class="btn btn-link btn-lg" asp-controller="Profile" asp-action="Index">Your profile</a>
+        </div>
+    </div>
+</section>
+
+<div class="container my-5">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 hover-lift fade-in-1">
+                <div class="card-body">
+                    <h5 class="card-title">Fast access</h5>
+                    <p class="card-text">Jump straight to your courses, upload files, and track submissions.</p>
+                    <a asp-controller="Courses" asp-action="Index" class="stretched-link">Go to Courses →</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 hover-lift fade-in-2">
+                <div class="card-body">
+                    <h5 class="card-title">Stay informed</h5>
+                    <p class="card-text">Get notified when teachers review or grade your work.</p>
+                    <a asp-controller="Notifications" asp-action="Index" class="stretched-link">Open Notifications →</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 hover-lift fade-in-3">
+                <div class="card-body">
+                    <h5 class="card-title">Your profile</h5>
+                    <p class="card-text">See your details and keep your account up to date.</p>
+                    <a asp-controller="Profile" asp-action="Index" class="stretched-link">View Profile →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

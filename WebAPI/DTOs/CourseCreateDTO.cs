@@ -1,0 +1,14 @@
+﻿// WebAPI/DTOs/CourseCreateDto.cs
+using System.ComponentModel.DataAnnotations;
+
+namespace WebAPI.DTOs
+{
+    public class CourseCreateDto
+    {
+        [Required, MaxLength(200)]
+        public string Name { get; set; } = "";
+
+        [MaxLength(500)]
+        public string? ShortDescription { get; set; }
+    }
+}

@@ -1,0 +1,70 @@
+﻿@model WebApp.ViewModels.Auth.LoginVM
+@{
+    ViewData["Title"] = "Login";
+}
+
+<section class="auth-hero py-5">
+    <div class="container d-flex justify-content-center">
+        <div class="auth-card card shadow-lg border-0">
+            <div class="card-body p-4 p-md-5">
+                <div class="text-center mb-4">
+                    <div class="brand-mark mx-auto mb-2">IE</div>
+                    <h1 class="h3 mb-0 fw-bold">
+                        <span class="brand-animated">Infoeduka</span> <span class="text-muted">Login</span>
+                    </h1>
+                    <p class="text-muted mt-2 mb-0">Sign in to continue</p>
+                </div>
+
+                <form asp-action="Login" method="post" novalidate>
+                    @Html.AntiForgeryToken()
+
+                    <div asp-validation-summary="All" class="alert alert-danger py-2 d-none" id="valSummary"></div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Email" class="form-control" placeholder="name@example.com" autocomplete="username" />
+                        <label asp-for="Email">Email</label>
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="form-floating mb-3 position-relative">
+                        <input asp-for="Password" class="form-control" placeholder="Password" autocomplete="current-password" id="passwordInput" />
+                        <label asp-for="Password">Password</label>
+                        <button type="button" class="btn btn-outline-secondary btn-sm toggle-eye" tabindex="-1" aria-label="Show password">
+                            <span data-eye="on">👁️</span>
+                        </button>
+                        <span asp-validation-for="Password" class="text-danger small d-block mt-1"></span>
+                    </div>
+
+                    <button class="btn btn-gradient w-100 mb-2" type="submit">Login</button>
+
+                    <div class="d-flex justify-content-between small">
+                        <a asp-controller="Auth" asp-action="Register" class="link-secondary">Create account</a>
+                        <a asp-controller="Auth" asp-action="ChangePassword" class="link-secondary">Change password</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Show/hide password
+        (function () {
+            const btn = document.querySelector('.toggle-eye');
+            if (!btn) return;
+            const input = document.getElementById('passwordInput');
+            btn.addEventListener('click', function () {
+                const isPwd = input.getAttribute('type') === 'password';
+                input.setAttribute('type', isPwd ? 'text' : 'password');
+                this.setAttribute('aria-label', isPwd ? 'Hide password' : 'Show password');
+            });
+
+            // Make the validation summary visible only when there are items
+            const valSum = document.getElementById('valSummary');
+            const hasErrors = document.querySelectorAll('[data-valmsg-summary="true"] li').length > 0;
+            if (hasErrors) valSum.classList.remove('d-none');
+        })();
+    </script>
+}

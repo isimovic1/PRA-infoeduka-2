@@ -1,0 +1,123 @@
+﻿@model WebApp.ViewModels.Auth.RegisterVM
+@{
+    ViewData["Title"] = "Register";
+}
+
+<section class="auth-hero py-5">
+    <div class="container d-flex justify-content-center">
+        <div class="auth-card card shadow-lg border-0">
+            <div class="card-body p-4 p-md-5">
+                <div class="text-center mb-4">
+                    <div class="brand-mark mx-auto mb-2">IE</div>
+                    <h1 class="h3 mb-0 fw-bold">
+                        <span class="brand-animated">Infoeduka</span> <span class="text-muted">Register</span>
+                    </h1>
+                    <p class="text-muted mt-2 mb-0">Create your account</p>
+                </div>
+
+                <form asp-action="Register" method="post" class="mt-3" novalidate>
+                    @Html.AntiForgeryToken()
+
+                    <div asp-validation-summary="All" class="alert alert-danger py-2 d-none" id="valSummary"></div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Email" class="form-control" placeholder="name@example.com" autocomplete="email" />
+                        <label asp-for="Email">Email</label>
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input asp-for="FirstName" class="form-control" placeholder="First name" autocomplete="given-name" />
+                                <label asp-for="FirstName">First name</label>
+                                <span asp-validation-for="FirstName" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input asp-for="LastName" class="form-control" placeholder="Last name" autocomplete="family-name" />
+                                <label asp-for="LastName">Last name</label>
+                                <span asp-validation-for="LastName" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Role" class="form-label">Role</label>
+                        <select asp-for="Role" class="form-select" id="Role">
+                            <option value="0">Student</option>
+                            <option value="1">Professor</option>
+                            <option value="2">Admin</option>
+                        </select>
+                        <span asp-validation-for="Role" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3" id="groupRow">
+                        <label asp-for="GroupId" class="form-label">GroupId (students only)</label>
+                        <input asp-for="GroupId" class="form-control" type="number" min="1" step="1" placeholder="e.g. 4" />
+                        <div class="form-text">Leave empty unless Role = Student.</div>
+                        <span asp-validation-for="GroupId" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 position-relative">
+                                <input asp-for="Password" class="form-control" placeholder="Password" autocomplete="new-password" id="regPassword" />
+                                <label asp-for="Password">Password</label>
+                                <button type="button" class="btn btn-outline-secondary btn-sm toggle-eye" tabindex="-1" data-target="#regPassword" aria-label="Show password">👁️</button>
+                                <span asp-validation-for="Password" class="text-danger small d-block mt-1"></span>
+                                <div class="form-text">Min 8 characters; use letters and numbers.</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3 position-relative">
+                                <input asp-for="ConfirmPassword" class="form-control" placeholder="Confirm password" autocomplete="new-password" id="regConfirm" />
+                                <label asp-for="ConfirmPassword">Confirm password</label>
+                                <button type="button" class="btn btn-outline-secondary btn-sm toggle-eye" tabindex="-1" data-target="#regConfirm" aria-label="Show password">👁️</button>
+                                <span asp-validation-for="ConfirmPassword" class="text-danger small d-block mt-1"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-gradient w-100 mb-2">Create account</button>
+                    <div class="text-center small">
+                        <a asp-action="Login" class="link-secondary">Back to login</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+            // Show GroupId only for Student (Role = 0)
+            const roleSel = document.getElementById("Role");
+            const groupRow = document.getElementById("groupRow");
+            function toggleGroup() {
+                const role = parseInt(roleSel.value || "0", 10);
+                groupRow.style.display = role === 0 ? "" : "none";
+            }
+            roleSel.addEventListener("change", toggleGroup);
+            toggleGroup();
+
+            // Show/hide password fields
+            document.querySelectorAll('.toggle-eye').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const target = document.querySelector(this.dataset.target);
+                    const isPwd = target.getAttribute('type') === 'password';
+                    target.setAttribute('type', isPwd ? 'text' : 'password');
+                    this.setAttribute('aria-label', isPwd ? 'Hide password' : 'Show password');
+                });
+            });
+
+            // Make validation summary visible only when it has items
+            const valSum = document.getElementById('valSummary');
+            const hasErrors = document.querySelectorAll('[data-valmsg-summary="true"] li').length > 0;
+            if (hasErrors) valSum.classList.remove('d-none');
+        })();
+    </script>
+}

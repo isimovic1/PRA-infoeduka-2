@@ -1,0 +1,65 @@
+﻿@model List<WebApp.ViewModels.Groups.GroupVM>
+@{
+    ViewData["Title"] = "Groups";
+    var q = (string?)ViewBag.Q;
+}
+
+<h2 class="mb-3">Groups</h2>
+
+@if (TempData["Msg"] is string ok)
+{
+    <div class="alert alert-success">@ok</div>
+}
+@if (TempData["Err"] is string err)
+{
+    <div class="alert alert-danger">@err</div>
+}
+
+<div class="row g-2 mb-3">
+    <div class="col-md-6">
+        <form method="get" class="d-flex">
+            <input name="q" value="@q" class="form-control me-2" placeholder="Search groups by name..." />
+            <button class="btn btn-primary">Search</button>
+        </form>
+    </div>
+
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="col-md-6 text-end">
+            <form asp-action="Create" method="post" class="d-inline-flex">
+                @Html.AntiForgeryToken()
+                <input name="name" class="form-control me-2" placeholder="New group name" />
+                <button class="btn btn-success">Create</button>
+            </form>
+        </div>
+    }
+</div>
+
+<table class="table table-hover align-middle">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th style="width:220px;"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var g in Model)
+        {
+            <tr>
+                <td>@g.Name</td>
+                <td class="text-end">
+                    <a class="btn btn-sm btn-outline-primary" asp-action="Details" asp-route-id="@g.Id">Open</a>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <form asp-action="Delete" method="post" class="d-inline ms-2"
+                              onsubmit="return confirm('Delete this group?')">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@g.Id" />
+                            <button class="btn btn-sm btn-outline-danger">Delete</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
